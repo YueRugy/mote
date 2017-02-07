@@ -1,0 +1,1 @@
+重构全民模特 一些功能没有实现： redis 还有token json实现的并不好 一些从token取的userId 全部变成传值过去
