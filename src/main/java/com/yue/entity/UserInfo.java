@@ -1,5 +1,6 @@
 package com.yue.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public class UserInfo {
     @Column(precision = 10, name = "total_income")
     private BigDecimal totalIncome;// 总收入
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     @OneToOne
     private User user;
 

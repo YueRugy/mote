@@ -10,14 +10,10 @@ import java.util.Map;
  * Created by admin on 2017/2/7
  */
 public class BaseController {
-    public String toJson(Object object) {
+    String toJson(Object object) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return "{success:false}";
+        return mapper.writeValueAsString(object);
+
     }
 
     String success() throws JsonProcessingException {
@@ -28,7 +24,7 @@ public class BaseController {
     }
 
 
-    public String errorJson(String message) {
+    String errorJson(String message) {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> result = new HashMap<>();
         result.put("success", false);

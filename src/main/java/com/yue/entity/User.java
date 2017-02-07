@@ -1,5 +1,6 @@
 package com.yue.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -18,6 +19,7 @@ public class User {
     @Column(length = 20, nullable = false, unique = true)
     private String phoneNumber;
     @Column(length = 200, nullable = false)
+    @JsonIgnore
     private String password;
     @Column(name = "avatar_url", length = 200)
     private String avatarUrl;
@@ -97,6 +99,7 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_time")
     private Date createTime;
+    @JsonIgnore
     @OneToOne(mappedBy = "user")
     private UserInfo userInfo;
 
@@ -429,7 +432,7 @@ public class User {
         this.userInfo = userInfo;
     }
 
-  
+
     @Override
     public String toString() {
         return "User{" +
