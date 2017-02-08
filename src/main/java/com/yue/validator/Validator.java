@@ -1,12 +1,12 @@
 package com.yue.validator;
 
 
-
 import com.yue.exception.ValidateException;
 import com.yue.util.ValidateUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 
@@ -60,6 +60,13 @@ public class Validator {
         }
     }
 
+
+    public static void validateBlank(BigDecimal value, String msg) {
+        if (value == null) {
+            throw new ValidateException(msg);
+        }
+    }
+
     @SuppressWarnings("rawtypes")
     public static void validateCollectionEmpty(Collection value, String msg) {
         if (value == null || value.isEmpty()) {
@@ -80,30 +87,30 @@ public class Validator {
         }
     }
 
-   /* public static void validateImageFile(MultipartFile file) {
-        if (file == null || file.isEmpty()) {
-            throw new ValidateException("文件为空");
-        }
-        if (file.getSize() > IMG_MAX_SIZE) {
-            throw new ValidateException("文件太大，不能超过20M");
-        }
-        if (!FileUtil.isAllowType(fileType, file.getOriginalFilename())) {
-            throw new ValidateException("图片类型不对，只能上传png,jpg,jpeg");
-        }
-    }
+    /* public static void validateImageFile(MultipartFile file) {
+         if (file == null || file.isEmpty()) {
+             throw new ValidateException("文件为空");
+         }
+         if (file.getSize() > IMG_MAX_SIZE) {
+             throw new ValidateException("文件太大，不能超过20M");
+         }
+         if (!FileUtil.isAllowType(fileType, file.getOriginalFilename())) {
+             throw new ValidateException("图片类型不对，只能上传png,jpg,jpeg");
+         }
+     }
 
-    public static void validateVideoFile(MultipartFile file) {
-        if (file == null || file.isEmpty()) {
-            throw new ValidateException("文件为空");
-        }
-        if (file.getSize() > VIDEO_MAX_SIZE) {
-            throw new ValidateException("文件太大，不能超过20M");
-        }
-        if (!FileUtil.isAllowType(videoType, file.getOriginalFilename())) {
-            throw new ValidateException("视频类型不对，只能上传mp4格式的文件");
-        }
-    }
-*/
+     public static void validateVideoFile(MultipartFile file) {
+         if (file == null || file.isEmpty()) {
+             throw new ValidateException("文件为空");
+         }
+         if (file.getSize() > VIDEO_MAX_SIZE) {
+             throw new ValidateException("文件太大，不能超过20M");
+         }
+         if (!FileUtil.isAllowType(videoType, file.getOriginalFilename())) {
+             throw new ValidateException("视频类型不对，只能上传mp4格式的文件");
+         }
+     }
+ */
     public static void validateFile(MultipartFile file, String msg) {
         if (file == null || file.isEmpty()) {
             throw new ValidateException(msg);

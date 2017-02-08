@@ -1,5 +1,6 @@
 package com.yue.controller;
 
+import com.yue.entity.Task;
 import com.yue.entity.User;
 import com.yue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +99,9 @@ public class UserController extends BaseController {
         }
     }
 
+    /**
+     * 更新商家信息
+     */
     @RequestMapping(value = "updateSeller", produces = "application/json", method = RequestMethod.POST)
     public Object updateSeller(User user) {
         try {
