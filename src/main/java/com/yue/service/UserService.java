@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ public class UserService {
         user.setStatus(UserStatus.normal.getValue());
         user.setAttestStatus(AuthenStatus.unAuthen.getValue());
         user.setType(UserType.mote.getValue());
+        user.setCreateTime(new Date(System.currentTimeMillis()));
         //初始化info 信息
         UserInfo info = userInfoService.init();
         info.setUser(user);
@@ -77,6 +79,7 @@ public class UserService {
         user.setStatus(UserStatus.normal.getValue());
         user.setAttestStatus(AuthenStatus.unAuthen.getValue());
         user.setType(UserType.seller.getValue());
+        user.setCreateTime(new Date(System.currentTimeMillis()));
         //初始化info 信息
         UserInfo info = userInfoService.init();
         info.setUser(user);
@@ -127,6 +130,59 @@ public class UserService {
         result.put("userInfo", loginUser.getUserInfo());
 
         return result;
+
+    }
+
+    /***
+     * 修改密码
+     */
+    public void changePassword(User user) {
+        //user = userDao.findByPhoneNumber(user.getPhoneNumber());
+        String password = user.getPassword();
+        user = userDao.findByPhoneNumber(user.getPhoneNumber());
+        if (user == null) {
+            throw new BusinessException("用户不存在或已停用");
+        }
+        user.setPassword(password);
+        user.setUpdateTime(new Date(System.currentTimeMillis()));
+        userDao.flush();
+    }
+
+    /***
+     * 更新模特基本信息
+     */
+    public User updateMote(User user) {
+        userDao.updateMote(user.getId(), user.getNickname(), user.getAvatarUrl(),
+                user.getGender(), user.getWangwang(), user.getAlipayId(), user.getAlipayName(), user.getHeight(), user.getWeight());
+        user = userDao.findOne(user.getId());
+        return user;
+    }
+
+    /***
+     * 更新商家基本信息
+     */
+    public Object updateSeller(User user) {
+        userDao.updateSeller(user.getId(), user.getNickname(), user.getShopName(), user.getEmail(), user.getWeixin(), user.getReferee());
+        user = userDao.findOne(user.getId());
+        return user;
+    }
+
+
+    /**
+     * 后台审核用户
+     */
+    public void approve(Integer id, Integer status) {
+        User user = userDao.findOne(id);
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+
+        if (!AuthenStatus.isExist(status)) {
+            throw new BusinessException("状态不对");
+        }
+
+        user.setStatus(status);
+        userDao.flush();
 
     }
 }

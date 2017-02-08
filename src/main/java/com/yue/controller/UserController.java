@@ -71,5 +71,42 @@ public class UserController extends BaseController {
         }
     }
 
+    /**
+     * 修改密码
+     */
+    @RequestMapping(value = "changePassword", produces = "application/json", method = RequestMethod.POST)
+    public Object changePassword(User user) {
+        try {
+            userService.changePassword(user);
+            return success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return errorJson(e.getMessage());
+        }
+    }
+
+    /**
+     * 更新模特信息
+     */
+    @RequestMapping(value = "updateMote", produces = "application/json", method = RequestMethod.POST)
+    public Object updateMote(User user) {
+        try {
+            return toJson(userService.updateMote(user));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return errorJson(e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "updateSeller", produces = "application/json", method = RequestMethod.POST)
+    public Object updateSeller(User user) {
+        try {
+            return toJson(userService.updateSeller(user));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return errorJson(e.getMessage());
+        }
+    }
+
 
 }
