@@ -3,6 +3,9 @@ package com.yue.controller;
 import com.yue.entity.Task;
 import com.yue.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,4 +46,30 @@ public class TaskController extends BaseController {
             return errorJson(e.getMessage());
         }
     }
+
+    /**
+     * 查询商家的任务
+     */
+    @RequestMapping(value = "getTaskList", produces = "application/json", method = RequestMethod.POST)
+    public Object getTaskList(Integer id, Integer type, @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+        try {
+
+            return toJson(taskService.getTaskList(type, id, pageable));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return errorJson(e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "test", produces = "application/json", method = RequestMethod.POST)
+    public Object test(Task task) {
+        try {
+            return toJson(taskService.getAll(task));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return errorJson(e.getMessage());
+        }
+    }
+
+
 }

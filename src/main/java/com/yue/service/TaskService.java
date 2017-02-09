@@ -4,17 +4,26 @@ import com.yue.dao.TaskDao;
 import com.yue.dao.UserDao;
 import com.yue.entity.Task;
 import com.yue.entity.User;
+import com.yue.enums.FeeChangeType;
 import com.yue.enums.UserType;
 import com.yue.exception.BusinessException;
 import com.yue.exception.ValidateException;
 import com.yue.validator.Validator;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by admin on 2017/2/8
@@ -29,6 +38,8 @@ public class TaskService {
     @Autowired
     ServiceChargeService serviceChargeService;
 
+    @Autowired
+    FeeChangeFlowService feeChangeFlowService;
 
     /**
      * 商家发布任务
@@ -53,10 +64,67 @@ public class TaskService {
         task.setFinishNumber(0);
         task.setFinishStatus(0);
         task.setCreateTime(new Date(System.currentTimeMillis()));
-
-        taskDao.save(task);
+        task.setUser(user);
+        task.setStatus(2);
+        task = taskDao.save(task);
+        //扣除金额
+        feeChangeFlowService.freezeFee(userId, totalFee, "hello", task.getId(), null, FeeChangeType.task.getValue());
 
     }
+
+
+    /**
+     * 获取任务详细信息
+     */
+    public Task getDetailByTaskId(Integer taskId) {
+        return taskDao.getOne(taskId);
+    }
+
+    /**
+     * 获取商家的任务
+     */
+    public Page<Task> getTaskList(Integer type, Integer id, Pageable pageable) {
+        if (type != null) {
+            return taskDao.findAll(new Specification<Task>() {
+                @Override
+                public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                    Predicate condition = null;
+                    if (type == 1) {
+                        condition = cb.equal(root.get("status"), 0);
+                    } else if (type == 2) {
+                        condition = cb.and(cb.equal(root.get("status"), 2), cb.equal(root.get("finishStatus"), 0));
+                    } else if (type == 3) {
+                        condition = cb.equal(root.get("finishStatus"), 1);
+                    } else if (type == 4) {
+                        condition = cb.equal(root.get("status"), 1);
+                    }
+                    query.where(condition);
+                    return null;
+                }
+            }, pageable);
+
+        } else {
+            return taskDao.findAllByUserId(id, pageable);
+            // return taskDao.findAll(pageable);
+            //return taskDao.findAllByStatus(2,pageable);
+        }
+
+    }
+
+    public List<Task> getAll(final Task task) {
+        return taskDao.findAll(new Specification<Task>() {
+            @Override
+            public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                /*Predicate titleEqual = cb.equal(root.<String>get("title"), task.getTitle());
+                Predicate genderEqual = cb.equal(root.<Integer>get("gender"), task.getGender());
+                query.where(titleEqual).where(genderEqual);*/
+                Predicate condition = cb.or(cb.equal(root.get("title"), task.getTitle()), cb.equal(root.get("gender"), task.getGender()));
+                query.where(condition);
+                return null;
+            }
+        });
+    }
+
 
     /**
      * 校验
@@ -82,9 +150,5 @@ public class TaskService {
             Validator.validateBlank(task.getShape(), "体型不能为空.");
 
         }
-    }
-
-    public Task getDetailByTaskId(Integer taskId) {
-        return taskDao.getOne(taskId);
     }
 }

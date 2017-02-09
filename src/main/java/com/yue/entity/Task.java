@@ -2,6 +2,7 @@ package com.yue.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -103,7 +104,7 @@ public class Task {
     @Column(name = "un_accept_days")
     private Integer unAcceptDays;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
@@ -116,7 +117,6 @@ public class Task {
     public void setId(Integer id) {
         this.id = id;
     }
-
 
 
     public String getTitle() {
@@ -397,5 +397,13 @@ public class Task {
 
     public void setUnAcceptDays(Integer unAcceptDays) {
         this.unAcceptDays = unAcceptDays;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
