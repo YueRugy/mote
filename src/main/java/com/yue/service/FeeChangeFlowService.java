@@ -49,7 +49,6 @@ class FeeChangeFlowService {
         flow.setType(type);
         //更新userInfo
         userInfoService.addPlus(userInfo, fee);
-
         feeChangeFlowDao.save(flow);
 
     }

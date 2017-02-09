@@ -18,7 +18,7 @@ public class UserInfoService {
     UserInfoDao userInfoDao;
 
 
-    public UserInfo init() {
+    UserInfo init() {
         UserInfo info = new UserInfo();
         info.setFinishNum(0);
         info.setFollowNum(0);
@@ -37,10 +37,11 @@ public class UserInfoService {
         userInfo.setFreezeFee(userInfo.getFreezeFee().add(fee));
         userInfoDao.save(userInfo);
     }*/
+
     /**
      * 余额减少冻结金额增加
      */
-    public void addPlus(UserInfo userInfo, BigDecimal fee) {
+    void addPlus(UserInfo userInfo, BigDecimal fee) {
         userInfo.setRemindFee(userInfo.getRemindFee().subtract(fee));
         userInfo.setFreezeFee(userInfo.getFreezeFee().add(fee));
         userInfoDao.save(userInfo);

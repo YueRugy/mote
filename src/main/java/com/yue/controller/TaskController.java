@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+
 /**
  * Created by admin on 2017/2/8
  */
@@ -61,10 +63,27 @@ public class TaskController extends BaseController {
         }
     }
 
+    /**
+     * 测试专用
+     */
     @RequestMapping(value = "test", produces = "application/json", method = RequestMethod.POST)
     public Object test(Task task) {
         try {
             return toJson(taskService.getAll(task));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return errorJson(e.getMessage());
+        }
+    }
+
+    /***
+     * 模特搜索任务
+     */
+    @RequestMapping(value = "search", produces = "application/json", method = RequestMethod.POST)
+    public Object search(String keyword, BigDecimal fee,
+                         @PageableDefault(value = 10, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+        try {
+            return toJson(taskService.search(keyword, fee, pageable));
         } catch (Exception e) {
             e.printStackTrace();
             return errorJson(e.getMessage());
