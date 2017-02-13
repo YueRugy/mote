@@ -81,9 +81,37 @@ public class TaskController extends BaseController {
      */
     @RequestMapping(value = "search", produces = "application/json", method = RequestMethod.POST)
     public Object search(String keyword, BigDecimal fee,
-                         @PageableDefault(value = 10, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+                         @PageableDefault(value = 2, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         try {
             return toJson(taskService.search(keyword, fee, pageable));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return errorJson(e.getMessage());
+        }
+    }
+
+    /**
+     * 模特接单
+     */
+    @RequestMapping(value = "newMoteTask", produces = "application/json", method = RequestMethod.POST)
+    public Object newMoteTask(Integer moteId, Integer taskId) {
+        try {
+            taskService.newMoteTask(moteId, taskId);
+            return success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return errorJson(e.getMessage());
+        }
+    }
+
+    /***
+     * 查看模特未完成的任务
+     */
+    @RequestMapping(value = "getUnFinishNumByMoteId", produces = "application/json", method = RequestMethod.POST)
+    public Object getUnFinishNumByMoteId(Integer moteId,
+                                         @PageableDefault(value = 2, sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+        try {
+            return toJson(taskService.getUnFinishNumByMoteId(moteId, pageable));
         } catch (Exception e) {
             e.printStackTrace();
             return errorJson(e.getMessage());

@@ -1,22 +1,30 @@
 package com.yue.service;
 
+import com.yue.dao.MoteTaskDao;
 import com.yue.dao.TaskDao;
 import com.yue.dao.UserDao;
+import com.yue.entity.MoteTask;
 import com.yue.entity.Task;
 import com.yue.entity.User;
 import com.yue.enums.FeeChangeType;
+import com.yue.enums.MoteTaskStatus;
 import com.yue.enums.UserType;
 import com.yue.exception.BusinessException;
 import com.yue.exception.ValidateException;
+import com.yue.util.LockUtil;
 import com.yue.validator.Validator;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,6 +44,8 @@ public class TaskService {
     ServiceChargeService serviceChargeService;
     @Autowired
     FeeChangeFlowService feeChangeFlowService;
+    @Autowired
+    MoteTaskDao moteTaskDao;
 
     /**
      * 商家发布任务
@@ -158,5 +168,58 @@ public class TaskService {
 
             return null;
         }, pageable);
+    }
+
+    /**
+     * 模特接单
+     */
+    public void newMoteTask(Integer moteId, Integer taskId) {
+
+        synchronized (LockUtil.get(String.valueOf(taskId))) {
+            Task task = taskDao.findOne(taskId);
+            if (task == null) {
+                LockUtil.removeTask(String.valueOf(taskId));
+                throw new BusinessException("任务不存在");
+            }
+
+            User mote = userDao.findOne(moteId);
+            if (mote == null || mote.getType() != UserType.mote.getValue()) {
+                throw new BusinessException("模特不存在");
+            }
+
+            MoteTask existTask = moteTaskDao.findByUserIdAndTaskId(moteId, taskId);
+            if (existTask != null) {
+                throw new BusinessException("任务已经存在");
+            }
+
+            Integer count = moteTaskDao.countByUserIdAndDate(moteId);
+            if (count > 15) {
+                throw new BusinessException("接单过多");
+            }
+
+            MoteTask moteTask = new MoteTask();
+            moteTask.setUserId(moteId);
+            moteTask.setTaskId(taskId);
+            moteTask.setAcceptedTime(new Date());
+            moteTask.setCreateTime(new Date());
+            moteTask.setStatus(MoteTaskStatus.newAccept.getValue());
+
+            moteTaskDao.save(moteTask);
+            task.setAcceptNumber(task.getAcceptNumber() == null ? 1 : task.getAcceptNumber() + 1);
+            taskDao.saveAndFlush(task);
+        }
+
+    }
+
+    /**
+     * 查看模特未完成的任务
+     */
+    public Page<MoteTask> getUnFinishNumByMoteId(Integer moteId, Pageable pageable) {
+        return moteTaskDao.findAll((root, query, cb) -> {
+            Predicate predicate = cb.or(cb.equal(root.get("userId"), moteId), cb.equal(root.get("finishStatus"), 0));
+            query.where(predicate);
+            return null;
+        }, pageable);
+
     }
 }

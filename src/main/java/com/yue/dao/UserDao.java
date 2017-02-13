@@ -26,4 +26,6 @@ public interface UserDao extends JpaRepository<User, Integer> {
     void updateSeller(@Param("id") Integer id, @Param("nickname") String nickname, @Param("shopName") String shopName, @Param("email") String email, @Param("weixin") String weixin, @Param("referee") String referee);
 
     User findByIdAndPassword(Integer userId, String password);
+
+
 }
