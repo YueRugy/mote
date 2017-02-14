@@ -25,7 +25,7 @@ public class MoteTask {
     @Column(name = "update_time")
     private Date updateTime;
     private String orderNo;
-    @Column(precision = 10)
+    @Column(precision = 20,scale = 5)
     private BigDecimal selfBuyFee;
     @Column(length = 2)
     private Integer status;

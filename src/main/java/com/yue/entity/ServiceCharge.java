@@ -12,11 +12,11 @@ public class ServiceCharge {
     @Id
     @GeneratedValue
     private Integer id;
-    @Column(precision = 10)
+    @Column(precision = 20, scale = 5)
     private BigDecimal fee;
-    @Column(precision = 10, name = "min_price")
+    @Column(precision = 20, scale = 5, name = "min_price")
     private BigDecimal minPrice;
-    @Column(precision = 10, name = "max_price")
+    @Column(precision = 20, scale = 5, name = "max_price")
     private BigDecimal maxPrice;
 
     public Integer getId() {

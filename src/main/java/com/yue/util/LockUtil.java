@@ -11,6 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LockUtil {
     private static final Map<String, Object> taskLock = new ConcurrentHashMap<>();
     private static final Lock task = new ReentrantLock();
+    private static final ConcurrentHashMap<String, Object> map = new ConcurrentHashMap<>();
 
     public static Object get(String key) {
         task.lock();
@@ -18,12 +19,26 @@ public class LockUtil {
         Object lock = taskLock.get(key);
         task.unlock();
         return lock;
-
     }
-
 
     public static void removeTask(String key) {
         taskLock.remove(key);
+    }
+
+
+    public synchronized static Object getVideo(String key) {
+        Object object = new Object();
+        Object returnObject = map.putIfAbsent(key, new Object());
+
+        return returnObject == null ? object : returnObject;
+    }
+
+    public static void set(String key) {
+        map.put(key, new Object());
+    }
+
+    public static void removeVideo(String key) {
+        map.remove(key);
     }
 
 

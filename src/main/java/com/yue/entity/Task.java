@@ -22,13 +22,13 @@ public class Task {
     @Column(length = 50)
     private String title;
     private String url;
-    @Column(precision = 10)
+    @Column(precision = 20,scale = 5)
     private BigDecimal price;
-    @Column(precision = 10, name = "shot_fee")
+    @Column(precision = 20,scale = 5,name = "shot_fee")
     private BigDecimal shotFee;
     @Column(length = 100, name = "img_url")
     private String imgUrl;
-    @Column(precision = 10, name = "self_buy_off")
+    @Column(precision = 20,scale = 5,name = "self_buy_off")
     private BigDecimal selfBuyOff;
     @Column(length = 100, name = "shot_desc")
     private String shotDesc;
@@ -69,7 +69,7 @@ public class Task {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "approve_time")
     private Date approveTime;
-    @Column(precision = 10)
+    @Column(precision = 20,scale = 5)
     private BigDecimal totalFee;
     private String nickname;
     @Column(length = 10000, name = "old_url")
@@ -103,7 +103,6 @@ public class Task {
     String moteIds;*/
     @Column(name = "un_accept_days")
     private Integer unAcceptDays;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonIgnore

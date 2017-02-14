@@ -18,16 +18,16 @@ public class UserInfo {
     @GeneratedValue
     @Column(updatable = false)
     private Integer id;
-    @Column(precision = 10, name = "remind_fee")
+    @Column(precision = 20, scale = 5, name = "remind_fee")
     private BigDecimal remindFee;
-    @Column(precision = 10, name = "freeze_fee")
+    @Column(precision = 20, scale = 5, name = "freeze_fee")
     private BigDecimal freezeFee;
     @Column(name = "finish_num", length = 11)
     private Integer finishNum;// 完成数
     // private Double selfBuyRate;// 自购率
     @Column(name = "follow_num", length = 11)
     private Integer followNum;// 关注数
-    @Column(precision = 10, name = "total_income")
+    @Column(precision = 20, scale = 5, name = "total_income")
     private BigDecimal totalIncome;// 总收入
     @JoinColumn(name = "user_id")
     @JsonIgnore

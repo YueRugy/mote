@@ -1,6 +1,5 @@
 package com.yue.controller;
 
-import com.yue.entity.Task;
 import com.yue.entity.User;
 import com.yue.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +31,8 @@ public class UserController extends BaseController {
         }
     }
 
-    /**
-     * 模特注册
+    /*
+     * 商家注册
      */
     @RequestMapping(value = "registerSeller", produces = "application/json", method = RequestMethod.POST)
     public Object registerSeller(User user) {

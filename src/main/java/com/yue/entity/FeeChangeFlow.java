@@ -19,17 +19,17 @@ public class FeeChangeFlow {
     private Integer id;
     @Column(length = 11, name = "user_id")
     private Integer userId;
-    @Column(precision = 10)
+    @Column(precision = 20, scale = 5)
     private BigDecimal remindChange;
-    @Column(precision = 10)
+    @Column(precision = 20, scale = 5)
     private BigDecimal freezeChange;
 
     private String reason;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
-    @Column(precision = 10)
+    @Column(precision = 20, scale = 5)
     private BigDecimal beforeRemindFee;
-    @Column(precision = 10)
+    @Column(precision = 20, scale = 5)
     private BigDecimal beforeFreezeFee;
 
     private Integer referId;
